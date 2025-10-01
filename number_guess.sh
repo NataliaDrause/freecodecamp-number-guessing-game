@@ -20,5 +20,17 @@ if [[ -z $USER_ID ]]
     BEST_GAME=$($PSQL "SELECT best_game FROM users WHERE user_id='$USER_ID'")
     echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took <best_game> guesses."
 fi
+
 echo 'Guess the secret number between 1 and 1000:'
-read NUMBER
+
+GUESS_NUMBER() {
+  read NUMBER
+  # if input is not a number
+    if [[ ! $NUMBER =~ ^[0-9]+$ ]]
+      then
+      echo 'That is not an integer, guess again:'
+      GUESS_NUMBER
+    fi
+}
+
+GUESS_NUMBER
