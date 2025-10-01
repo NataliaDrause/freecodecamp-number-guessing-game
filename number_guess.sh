@@ -21,6 +21,7 @@ if [[ -z $USER_ID ]]
     echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took <best_game> guesses."
 fi
 
+SECRET_NUMBER=$(( RANDOM % 1000 + 1 ))
 echo 'Guess the secret number between 1 and 1000:'
 
 GUESS_NUMBER() {
@@ -28,8 +29,19 @@ GUESS_NUMBER() {
   # if input is not a number
     if [[ ! $NUMBER =~ ^[0-9]+$ ]]
       then
-      echo 'That is not an integer, guess again:'
-      GUESS_NUMBER
+        echo 'That is not an integer, guess again:'
+        GUESS_NUMBER
+    elif (( $NUMBER > $SECRET_NUMBER ))
+      then
+        echo "It's lower than that, guess again:"
+        GUESS_NUMBER
+    elif (( $NUMBER < $SECRET_NUMBER ))
+      then
+        echo "It's higher than that, guess again:"
+        GUESS_NUMBER
+    else
+        # check the number
+        echo "You guessed it in <number_of_guesses> tries. The secret number was $SECRET_NUMBER. Nice job!"
     fi
 }
 
