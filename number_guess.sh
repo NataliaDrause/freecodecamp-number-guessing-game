@@ -18,8 +18,8 @@ if [[ -z $USER_ID ]]
       fi
       # get new user_id
   else
-    GAMES_PLAYED=$($PSQL "SELECT games_played FROM users WHERE user_id='$USER_ID'")
-    BEST_GAME=$($PSQL "SELECT best_game FROM users WHERE user_id='$USER_ID'")
+    GAMES_PLAYED=$($PSQL "SELECT games_played FROM users WHERE user_id=$USER_ID")
+    BEST_GAME=$($PSQL "SELECT best_game FROM users WHERE user_id=$USER_ID")
     echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
 
@@ -30,7 +30,7 @@ echo 'Guess the secret number between 1 and 1000:'
 
 GUESS_NUMBER() {
   read NUMBER
-  NUMBER_OF_GUESSES=$(( $NUMBER_OF_GUESSES + 1 ))
+  NUMBER_OF_GUESSES=$(( NUMBER_OF_GUESSES + 1 ))
   # if input is not a number
     if [[ ! $NUMBER =~ ^[0-9]+$ ]]
       then
@@ -49,10 +49,10 @@ GUESS_NUMBER() {
         echo "You guessed it in $NUMBER_OF_GUESSES tries. The secret number was $SECRET_NUMBER. Nice job!"
         if (( $NUMBER_OF_GUESSES < $BEST_GAME ))
           then
-            INSERT_RESULT=$($PSQL "INSERT INTO users(best_game, games_played) VALUES($NUMBER_OF_GUESSES, $GAMES_PLAYED)")
+            UPDATE_RESULT=$($PSQL "UPDATE users SET best_game=$NUMBER_OF_GUESSES, games_played=$GAMES_PLAYED WHERE user_id=$USER_ID")
           else
-            INSERT_RESULT=$($PSQL "INSERT INTO users(games_played) VALUES($GAMES_PLAYED)")
-        fi
+            UPDATE_RESULT=$($PSQL "UPDATE users SET games_played=$GAMES_PLAYED WHERE user_id=$USER_ID")
+          fi
     fi
 }
 
